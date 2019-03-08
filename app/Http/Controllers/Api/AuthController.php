@@ -20,7 +20,7 @@ class AuthController extends Controller
        ]);
        
 
-       $user=User::firstOrNew(['email' => $request->email]);
+       $user=new User();
        $user->email=$request->email;
        $user->name= $request->name;
        $user->password=Hash::make($request->password);
@@ -43,19 +43,25 @@ class AuthController extends Controller
 
 
     // make an internal request to the passport server
-    $tokenRequest = Request::create('/oauth/token', 'post', [
-            'grant_type'    => 'password',
-            'client_id'     => '2',
-            'client_secret' => 'YjeTgChvldu6Dn7mwYmoow32CAvibyHGncM3Vjyq',
-            'username'      => $request->input('email'),
-            'password'      => $request->input('password')
-    ]);
+    // $tokenRequest = Request::create('/oauth/token', 'post', [
+    //         'grant_type'    => 'password',
+    //         'client_id'     => '2',
+    //         'client_secret' => 'YjeTgChvldu6Dn7mwYmoow32CAvibyHGncM3Vjyq',
+    //         'username'      => $request->input('email'),
+    //         'password'      => $request->input('password')
+    // ]);
 
     
-    $response = app()->handle($tokenRequest);
+    // $response = app()->handle($tokenRequest);
     
-    return $response;
+    // return $response;
+       $success['token'] =  $user->createToken('Phonebook')-> accessToken; 
+        $success['name'] =  $user->name;
+        return response()->json($success,200); 
    } 
+
+
+
    public function login(Request $request){
      $validateData=$request->validate([
            'email' => 'required',
@@ -69,19 +75,24 @@ class AuthController extends Controller
      }
 
      if(Hash::check($request->password,$user->password)){
-          $tokenRequest = Request::create('/oauth/token', 'post', [
-                'grant_type'    => 'password',
-                'client_id'     => '2',
-                'client_secret' => 'YjeTgChvldu6Dn7mwYmoow32CAvibyHGncM3Vjyq',
-                'username'      => $request->input('email'),
-                'password'      => $request->input('password')
-        ]);
-
-        
-        $response = app()->handle($tokenRequest);
-        return $response;
+          $success['token'] =  $user->createToken('Phonebook')-> accessToken; 
+        $success['name'] =  $user->name;
+        return response()->json($success,200); 
      }
 
+   }
+   public function logout(){
+    $accessToken = auth()->user()->token();
+
+    $refreshToken = DB::table('oauth_refresh_tokens')
+        ->where('access_token_id', $accessToken->id)
+        ->update([
+            'revoked' => true
+        ]);
+
+    $accessToken->revoke();
+
+    return response()->json(['status' => 200]);
    }
 
 

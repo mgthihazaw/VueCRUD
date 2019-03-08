@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div >
 	     <toolbar></toolbar>
 		 
 		 <router-view></router-view>
@@ -14,6 +14,9 @@
     components:{
     	Toolbar,
     	AppFooter,
+    },
+    created(){
+    	
     }
   }
 </script>

@@ -20,11 +20,12 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 window.token=localStorage.getItem('token');
+
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // const Jwttoken=`Bearer ${localStorage.getItem('token')}`;
-window.axios.defaults.headers.common['Authorization'] = `Bearer token`;
+window.axios.defaults.headers.common['Authorization'] = 'Bearer '+localStorage.getItem('token');
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that

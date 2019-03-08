@@ -77,8 +77,15 @@
         
         axios.post('api/register',this.form)
         .then (res=>{
-          console.log(res.data)
-          console.log(res.config.data)
+
+          let accessToken=res.data.token;
+          let username=res.data.name;
+          
+           localStorage.setItem('token',accessToken);
+           localStorage.setItem('user',username);
+           
+           window.location='/';
+          
         })
         .catch(err=>console.log(err.response))
           

@@ -13,6 +13,7 @@
 </head>
 <body>
     <div id="app">
+        
         <v-app>
        <app-home></app-home>
    </v-app>
